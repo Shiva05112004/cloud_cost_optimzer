@@ -1,0 +1,90 @@
+# ══════════════════════════════════════════
+#  SECURITY — NEVER COMMIT THESE
+# ══════════════════════════════════════════
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.*.local
+.aws/
+*credentials*
+*secret*
+
+# ══════════════════════════════════════════
+#  BACKEND — Python / FastAPI
+# ══════════════════════════════════════════
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.sqlite3
+cloud_optimizer.db
+.pytest_cache/
+.cache/
+htmlcov/
+.coverage
+coverage.xml
+dist/
+build/
+*.egg-info/
+.mypy_cache/
+*.log
+logs/
+.python-version
+
+# ══════════════════════════════════════════
+#  FRONTEND — React / Vite / Node
+# ══════════════════════════════════════════
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+build/
+frontend/build/
+.vite/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+
+# ══════════════════════════════════════════
+#  OS FILES
+# ══════════════════════════════════════════
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.AppleDouble
+*~
+
+# ══════════════════════════════════════════
+#  VS CODE
+# ══════════════════════════════════════════
+.vscode/settings.json
+.vscode/launch.json
+.vscode/*.code-workspace
+.history/
+
+# ══════════════════════════════════════════
+#  MISC
+# ══════════════════════════════════════════
+*.tmp
+*.temp
+*.swp
+*.bak
+*.orig
+test-results/
+test-reports/
