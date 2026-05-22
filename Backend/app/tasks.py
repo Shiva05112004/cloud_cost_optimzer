@@ -123,3 +123,10 @@ def refresh_all_recommendations() -> dict:
         }
     finally:
         db.close()
+
+
+@celery_app.task(name="app.tasks.analyze_account_anomalies")
+def analyze_account_anomalies_task(account_id: int) -> dict:
+    from app.services.anomaly_service import analyze_account_anomalies
+
+    return analyze_account_anomalies(account_id)

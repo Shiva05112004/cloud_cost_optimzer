@@ -1,32 +1,15 @@
-from pydantic_settings import BaseSettings
-from functools import lru_cache
-
-
-class Settings(BaseSettings):
-    app_env: str = "development"
-    secret_key: str = "changeme"
-    database_url: str = "sqlite:///./cloud_optimizer.db"
-
-    jwt_algorithm: str = "HS256"
-    jwt_expire_minutes: int = 60
-
-    aws_default_region: str = "ap-south-1"
-
-    ses_sender_email: str = ""
-    ses_region: str = "ap-south-1"
-
-    class Config:
-        env_file = ".env"
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
+from app.config import get_settings
 
-DATABASE_URL = "sqlite:///./cloud_optimizer.db"
+
+settings = get_settings()
+DATABASE_URL = settings.database_url
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False},
+    pool_pre_ping=True,
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -43,6 +26,3 @@ def get_db():
         yield db
     finally:
         db.close()
-@lru_cache()
-def get_settings() -> Settings:
-    return Settings()
