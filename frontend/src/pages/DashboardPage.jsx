@@ -4,7 +4,6 @@ import { getRecommendations } from '../api/recommendations.api'
 import useDashboardStore from '../store/useDashboardStore'
 import KpiCard from '../components/KpiCard'
 import CostChart from '../components/CostChart'
-import RecommendationCard from '../components/RecommendationCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function DashboardPage() {
@@ -18,10 +17,15 @@ export default function DashboardPage() {
     const load = async () => {
       setLoading(true)
       try {
+        // Use the connected Role ARN persisted in localStorage (if any)
+        const roleArn = (() => {
+          try { return localStorage.getItem('connected_role_arn') } catch (error) { console.error('Failed to retrieve role ARN from localStorage', error) ; return null }
+        })()
+
         const [ec2Res, costRes, recRes] = await Promise.all([
-          getEC2Instances(),
-          getCosts(),
-          getRecommendations(),
+          getEC2Instances(roleArn),
+          getCosts(roleArn),
+          getRecommendations(roleArn),
         ])
         setInstances(ec2Res.data.instances || [])
         setCosts(costRes.data.by_service || {}, costRes.data.total_usd || 0)
@@ -29,14 +33,14 @@ export default function DashboardPage() {
           recRes.data.recommendations || [],
           recRes.data.total_potential_savings || 0,
         )
-      } catch (err) {
-        console.error(err)
+      } catch (_) {
+        console.error(_)
       } finally {
         setLoading(false)
       }
     }
     load()
-  }, [])
+  }, [setInstances, setCosts, setRecommendations, setLoading])
 
   if (loading) return <LoadingSpinner text="Fetching cloud data..." />
 
