@@ -44,17 +44,37 @@ def list_anomalies(db: Session = Depends(get_db), user=Depends(get_current_user)
 
 
 @router.post("/{anomaly_id}/false-positive")
-def post_false_positive(anomaly_id: int, user=Depends(get_current_user)):
+def post_false_positive(anomaly_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
     # mark anomaly as false positive and record pattern
     # ensure user owns the account for the anomaly
-    res = mark_false_positive(anomaly_id, user.id)
+    anomaly = db.query(AnomalyEvent).filter(AnomalyEvent.id == anomaly_id).first()
+    if not anomaly:
+        raise HTTPException(status_code=404, detail='Anomaly not found')
+    
+    # Verify user owns the account for this anomaly
+    account = db.query(CloudAccount).filter(
+        CloudAccount.id == anomaly.account_id,
+        CloudAccount.user_id == user.id
+    ).first()
+    if not account:
+        raise HTTPException(status_code=403, detail='Not authorized to modify this anomaly')
+    
+    res = mark_false_positive(anomaly_id, anomaly.account_id)
     if res.get('status') == 'not_found':
         raise HTTPException(status_code=404, detail='Anomaly not found')
     return res
 
 
 @router.post("/refresh/{account_id}")
-def refresh_account(account_id: int, user=Depends(get_current_user)):
+def refresh_account(account_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
     # enqueue background analysis for a specific account
+    # verify user owns the account
+    account = db.query(CloudAccount).filter(
+        CloudAccount.id == account_id,
+        CloudAccount.user_id == user.id
+    ).first()
+    if not account:
+        raise HTTPException(status_code=403, detail='Not authorized to refresh this account')
+    
     # simple synchronous run for now
     return analyze_account_anomalies(account_id)

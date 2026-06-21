@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import auth, resources, recommendations, accounts
+from app.routes import auth, resources, recommendations, accounts, anomalies, phase_a
 
 app = FastAPI(
     title="Cloud Cost Optimizer API",
@@ -20,6 +20,8 @@ app.include_router(auth.router,            prefix="/api/auth",            tags=[
 app.include_router(accounts.router,        prefix="/api/accounts",        tags=["Accounts"])
 app.include_router(resources.router,       prefix="/api/resources",       tags=["Resources"])
 app.include_router(recommendations.router, prefix="/api/recommendations", tags=["Recommendations"])
+app.include_router(anomalies.router,       prefix="/api/anomalies",       tags=["Anomalies"])
+app.include_router(phase_a.router,         prefix="/api/phase_a",         tags=["Phase A ML"])
 
 
 @app.get("/")
