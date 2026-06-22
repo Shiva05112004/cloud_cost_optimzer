@@ -163,7 +163,12 @@ def mark_false_positive(anomaly_id: int, account_id: int, service: Optional[str]
             magnitude_bucket=bucket,
         )
         db.add(pattern)
-        db.commit()
-        return {"status": "recorded", "pattern_id": pattern.id}
+        try:
+            db.commit()
+            return {"status": "recorded", "pattern_id": pattern.id}
+        except Exception as e:
+            logger.error(f"Failed to record false-positive pattern: {e}")
+            db.rollback()
+            return {"status": "error", "error": str(e)}
     finally:
         db.close()

@@ -12,6 +12,12 @@ from app.services.anomaly_service import analyze_account_anomalies, mark_false_p
 router = APIRouter()
 
 
+@router.get("/test")
+def test_endpoint(user=Depends(get_current_user)):
+    # simple authenticated test endpoint
+    return {"status": "ok", "user_id": user.id}
+
+
 @router.get("/")
 def list_anomalies(db: Session = Depends(get_db), user=Depends(get_current_user)):
     accounts = db.query(CloudAccount.id).filter(CloudAccount.user_id == user.id).all()
