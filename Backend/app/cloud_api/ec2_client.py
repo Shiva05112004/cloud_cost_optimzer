@@ -5,25 +5,53 @@ from app.config import get_settings
 settings = get_settings()
 
 
+# def get_boto3_session(role_arn: Optional[str] = None):
+#     """
+#     Returns a boto3 session.
+#     - If role_arn is provided: assumes that IAM role (production flow)
+#     - Otherwise: uses env credentials (local dev only)
+#     """
+#     if role_arn:
+#         sts = boto3.client("sts", region_name=settings.aws_default_region)
+#         assumed = sts.assume_role(
+#             RoleArn=role_arn,
+#             RoleSessionName="cloud-optimizer-session",
+#         )
+#         creds = assumed["Credentials"]
+#         session = boto3.Session(
+#             aws_access_key_id=creds["AccessKeyId"],
+#             aws_secret_access_key=creds["SecretAccessKey"],
+#             aws_session_token=creds["SessionToken"],
+#             region_name=settings.aws_default_region,
+#         )
+#     else:
+#         session = boto3.Session(region_name=settings.aws_default_region)
+#     return session
+
 def get_boto3_session(role_arn: Optional[str] = None):
     """
     Returns a boto3 session.
     - If role_arn is provided: assumes that IAM role (production flow)
     - Otherwise: uses env credentials (local dev only)
     """
+    print(f"--- CRITICAL DEBUG: Backend is checking region: '{settings.aws_default_region}' ---")
     if role_arn:
-        sts = boto3.client("sts", region_name=settings.aws_default_region)
-        assumed = sts.assume_role(
-            RoleArn=role_arn,
-            RoleSessionName="cloud-optimizer-session",
-        )
-        creds = assumed["Credentials"]
-        session = boto3.Session(
-            aws_access_key_id=creds["AccessKeyId"],
-            aws_secret_access_key=creds["SecretAccessKey"],
-            aws_session_token=creds["SessionToken"],
-            region_name=settings.aws_default_region,
-        )
+        try:
+            sts = boto3.client("sts", region_name=settings.aws_default_region)
+            assumed = sts.assume_role(
+                RoleArn=role_arn,
+                RoleSessionName="cloud-optimizer-session",
+            )
+            creds = assumed["Credentials"]
+            session = boto3.Session(
+                aws_access_key_id=creds["AccessKeyId"],
+                aws_secret_access_key=creds["SecretAccessKey"],
+                aws_session_token=creds["SessionToken"],
+                region_name=settings.aws_default_region,
+            )
+        except Exception as e:
+            print(f"ERROR assuming role {role_arn}: {str(e)}")
+            raise
     else:
         session = boto3.Session(region_name=settings.aws_default_region)
     return session

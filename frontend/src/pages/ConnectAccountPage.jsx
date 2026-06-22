@@ -13,6 +13,8 @@ export default function ConnectAccountPage() {
     try {
       await connectAccount(form)
       toast.success('AWS account connected!')
+      // Persist the connected role ARN so other pages can use it
+      try { localStorage.setItem('connected_role_arn', form.role_arn) } catch (error) { console.error('Failed to save role ARN in localStorage', error) }
       setConnected(true)
     } catch {
       toast.error('Failed to connect account.')
