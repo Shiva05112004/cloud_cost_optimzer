@@ -6,7 +6,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     app_env: str = "development"
     secret_key: str = "changeme"
-    database_url: str = "sqlite:///./cloud_optimizer.db"
+    database_url: str = "postgresql+psycopg2://postgres:4321@localhost:5432/cloudcost"
+    redis_url: str = "redis://localhost:6379/0"
 
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60

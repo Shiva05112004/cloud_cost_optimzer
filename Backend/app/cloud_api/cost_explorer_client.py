@@ -34,6 +34,7 @@ def get_monthly_cost(role_arn: Optional[str] = None) -> dict:
     return results
 
 
+<<<<<<< HEAD
 
 
 
@@ -71,3 +72,43 @@ def get_monthly_cost(role_arn: Optional[str] = None) -> dict:
 
 #     print(f"DEBUG: Parsed costs: {results}")  # ← Add this
 #     return results
+=======
+def get_daily_cost_history(role_arn: Optional[str] = None, days: int = 30) -> dict:
+    """Return a mapping of date (YYYY-MM-DD) -> total cost for the last `days` days.
+
+    Uses Cost Explorer with DAILY granularity.
+    """
+    session = get_boto3_session(role_arn)
+    ce = session.client("ce", region_name="us-east-1")
+
+    today = datetime.utcnow().date()
+    start = today - timedelta(days=days - 1)
+
+    response = ce.get_cost_and_usage(
+        TimePeriod={"Start": str(start), "End": str(today)},
+        Granularity="DAILY",
+        Metrics=["UnblendedCost"],
+    )
+
+    results = {}
+    for row in response.get("ResultsByTime", []):
+        day = row.get("TimePeriod", {}).get("Start")
+        amount = 0.0
+        for grp in row.get("Groups", []) or []:
+            # if grouped by service, sum groups; otherwise look at Total
+            try:
+                amount += float(grp["Metrics"]["UnblendedCost"]["Amount"])  # type: ignore
+            except Exception:
+                pass
+
+        if amount == 0.0:
+            # fallback to Total if present
+            try:
+                amount = float(row.get("Total", {}).get("UnblendedCost", {}).get("Amount", 0.0))
+            except Exception:
+                amount = 0.0
+
+        results[day] = round(amount, 4)
+
+    return results
+>>>>>>> 922b580a6d45d3a25797d6e2a9dd655eacbf6e28
