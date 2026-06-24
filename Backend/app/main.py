@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import auth, resources, recommendations, accounts
+from app.routes import auth, resources, recommendations, accounts, chat
 
 app = FastAPI(
     title="Cloud Cost Optimizer API",
@@ -22,7 +23,7 @@ app.include_router(auth.router,            prefix="/api/auth",            tags=[
 app.include_router(accounts.router,        prefix="/api/accounts",        tags=["Accounts"])
 app.include_router(resources.router,       prefix="/api/resources",       tags=["Resources"])
 app.include_router(recommendations.router, prefix="/api/recommendations", tags=["Recommendations"])
-
+app.include_router(chat.router,            prefix="/api/chat",            tags=["RAG Chat"])
 
 @app.get("/")
 def health():
