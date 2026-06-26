@@ -76,6 +76,7 @@ def list_ec2_instances(role_arn: Optional[str] = None) -> list:
                 "state": inst["State"]["Name"],
                 "launch_time": str(inst.get("LaunchTime", "")),
                 "region": settings.aws_default_region,
+                "Tags": inst.get("Tags", [])  
             })
 
     return instances

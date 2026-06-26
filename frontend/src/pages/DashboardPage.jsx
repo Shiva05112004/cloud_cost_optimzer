@@ -13,6 +13,11 @@ export default function DashboardPage() {
     setInstances, setCosts, setRecommendations, setLoading,
   } = useDashboardStore()
 
+  //  const roleArn = (() => {
+  //   try { return localStorage.getItem('connected_role_arn') } catch (error) { console.error('Failed to retrieve role ARN from localStorage', error) ; return null }
+  // })()
+  // const isConnected = !!roleArn;
+
   useEffect(() => {
     const load = async () => {
       setLoading(true)
@@ -55,10 +60,27 @@ console.log("Trend:", costRes.data.trend)
       <h1 className="page-title">Dashboard</h1>
       <p className="page-sub">Your AWS cost overview — updated live</p>
 
+     {/* ─── 💡 NEW CONNECTION STATUS BANNER ───
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        background: isConnected ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+        border: `1px solid ${isConnected ? 'var(--accent)' : 'var(--danger)'}`,
+        borderRadius: '12px',
+        padding: '12px 18px',
+        marginBottom: '28px',
+        boxSizing: 'border-box'
+      }}>connected</div> */}
+
+
+
+
+
       {/* KPI Cards */}
       <div className="grid-4">
-        <KpiCard icon="💰" title="Monthly Cost"    value={`$${totalCost.toFixed(8)}`}   color="var(--accent2)" />
-        <KpiCard icon="✦"  title="Potential Savings" value={`$${totalSavings.toFixed(8)}`} color="var(--accent)"  sub="per month" />
+        <KpiCard icon="💰" title="Monthly Cost"    value={`$${totalCost.toFixed(3)}`}   color="var(--accent2)" />
+        <KpiCard icon="✦"  title="Potential Savings" value={`$${totalSavings.toFixed(3)}`} color="var(--accent)"  sub="per month" />
         <KpiCard icon="⬡"  title="EC2 Instances"  value={instances.length}              color="var(--warn)"    sub="running" />
         <KpiCard icon="⚠"  title="Idle Instances" value={idleCount}                     color="var(--danger)"  sub="need attention" />
       </div>

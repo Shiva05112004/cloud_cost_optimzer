@@ -3,14 +3,14 @@ import {
   Tooltip, ResponsiveContainer,
 } from 'recharts'
 
-const DEMO_DATA = [
-  { month: 'Dec', cost: 420 },
-  { month: 'Jan', cost: 380 },
-  { month: 'Feb', cost: 510 },
-  { month: 'Mar', cost: 460 },
-  { month: 'Apr', cost: 390 },
-  { month: 'May', cost: 340 },
-]
+// const DEMO_DATA = [
+//   { month: 'Dec', cost: 420 },
+//   { month: 'Jan', cost: 380 },
+//   { month: 'Feb', cost: 510 },
+//   { month: 'Mar', cost: 460 },
+//   { month: 'Apr', cost: 390 },
+//   { month: 'May', cost: 340 },
+// ]
 
 export default function CostChart({ data = [] }) {
   const chartData = Array.isArray(data) && data.length ? data : []

@@ -51,6 +51,7 @@ class AccountOut(BaseModel):
 class EC2InstanceOut(BaseModel):
     instance_id: str
     instance_type: str
+    instance_name: Optional[str] = "Unnamed"
     state: str
     avg_cpu: float
     region: str

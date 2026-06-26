@@ -1,6 +1,6 @@
 from typing import Optional
 from functools import lru_cache
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict   
 
 
 class Settings(BaseSettings):
@@ -17,9 +17,10 @@ class Settings(BaseSettings):
 
     ses_sender_email: str = ""
     ses_region: str = "eu-north-1"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    class Config:
-        env_file = ".env"
+    # class Config:
+    #     env_file = ".env"
 
 
 @lru_cache()

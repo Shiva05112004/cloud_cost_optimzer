@@ -1,0 +1,9 @@
+AWS EC2 instances with average CPU utilization below 10% over a 7-day period are considered idle and should be stopped to eliminate unnecessary cost.
+
+Instances with CPU utilization between 10% and 20% are over-provisioned and should be downgraded to a smaller instance type to reduce monthly spend.
+
+Cost anomalies are detected using Z-score analysis. A Z-score above 2.0 indicates a statistically significant deviation from historical spending and should trigger an alert.
+
+Stopping an idle EC2 instance is generally safe if there are no active network connections and the instance has been idle for more than 24 hours.
+
+Downgrading an instance type requires a stop and restart, causing a brief downtime of typically under 60 seconds. Schedule this during off-peak hours to minimize impact on users.

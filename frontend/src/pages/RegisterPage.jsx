@@ -53,7 +53,7 @@ export default function RegisterPage() {
                 onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </div>
             <div>
-              <label className="label">Password</label>
+              <label className="label" visible={true}>Password</label>
               <input className="input" type="password" placeholder="••••••••"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })} required />

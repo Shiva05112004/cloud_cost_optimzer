@@ -1,3 +1,41 @@
+from pathlib import Path
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pickle
+
+
+INDEX_PATH = Path(__file__).parent / "tfidf_index.pkl"
+
+
+def build_vector_store():
+    """
+    Reads all .txt files, splits into paragraph chunks,
+    builds a TF-IDF index — pure Python, no compilation needed.
+    """
+    docs_path = Path(__file__).parent / "documents"
+    chunks = []
+
+    for file in docs_path.glob("*.txt"):
+        text = file.read_text(encoding="utf-8")
+        for para in text.split("\n\n"):
+            para = para.strip()
+            if para:
+                chunks.append(para)
+
+    vectorizer = TfidfVectorizer(stop_words="english")
+    matrix = vectorizer.fit_transform(chunks)
+
+    with open(INDEX_PATH, "wb") as f:
+        pickle.dump({"vectorizer": vectorizer, "matrix": matrix, "chunks": chunks}, f)
+
+    print(f"Vector store built with {len(chunks)} chunks.")
+    return chunks
+
+
+def load_vector_store():
+    with open(INDEX_PATH, "rb") as f:
+        return pickle.load(f)
+
+
 # from langchain_community.vectorstores import FAISS
 # from langchain_community.embeddings import HuggingFaceEmbeddings
 # from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -39,28 +77,27 @@
 #         allow_dangerous_deserialization=True,
 #     )
 
-
 # Simulated Mock Data Structure to bypass FAISS / Chroma compilation blocks
-class MockIndex:
-    def __init__(self):
-        pass
+# class MockIndex:
+#     def __init__(self):
+#         pass
 
-class MockVectorStore:
-    def __init__(self):
-        self.index = MockIndex()
+# class MockVectorStore:
+#     def __init__(self):
+#         self.index = MockIndex()
     
-    def similarity_search(self, query, k=3):
-        # Returns a plain dictionary mockup structure matching LangChain Document interfaces
-        class MockDoc:
-            def __init__(self, text):
-                self.page_content = text
-                self.metadata = {}
-        return [MockDoc("Simulated Local Context Recommendation Data Block")]
+#     def similarity_search(self, query, k=3):
+#         # Returns a plain dictionary mockup structure matching LangChain Document interfaces
+#         class MockDoc:
+#             def __init__(self, text):
+#                 self.page_content = text
+#                 self.metadata = {}
+#         return [MockDoc("Simulated Local Context Recommendation Data Block")]
 
-def load_vector_store():
-    return MockVectorStore()
+# def load_vector_store():
+#     return MockVectorStore()
 
-class FAISS:
-    @classmethod
-    def load_local(cls, *args, **kwargs):
-        return MockVectorStore()
+# class FAISS:
+#     @classmethod
+#     def load_local(cls, *args, **kwargs):
+#         return MockVectorStore()

@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, Query
 from typing import Optional
 
 from app.services.optimizer_service import run_optimization
-from app.routes.auth import get_current_user          # ← from auth, not utils
+from app.routes.auth import get_current_user  
+        # ← from auth, not utils
 
 router = APIRouter()
 

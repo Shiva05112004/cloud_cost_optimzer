@@ -155,3 +155,18 @@ td {
 }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg3); }
+
+/* Chat scrollbar styling for ChatBox thread */
+.card ::-webkit-scrollbar {
+  width: 4px;
+}
+.card ::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+/* Subtle pulse animation while CloudOpt is thinking */
+@keyframes chatPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
