@@ -63,7 +63,7 @@ def list_ec2_instances(role_arn: Optional[str] = None) -> list:
     Returns a flat list of instance dicts.
     """
     session = get_boto3_session(role_arn)
-    ec2 = session.client("ec2")
+    ec2 = session.client("ec2", region_name=settings.aws_default_region)
 
     response = ec2.describe_instances()
     instances = []

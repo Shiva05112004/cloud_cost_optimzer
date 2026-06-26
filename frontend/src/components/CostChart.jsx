@@ -12,14 +12,21 @@ const DEMO_DATA = [
   { month: 'May', cost: 340 },
 ]
 
-export default function CostChart({ data = DEMO_DATA }) {
+export default function CostChart({ data = [] }) {
+  const chartData = Array.isArray(data) && data.length ? data : []
+
   return (
     <div className="card">
       <h3 style={{ fontFamily: 'Syne', fontSize: '16px', marginBottom: '24px' }}>
         Monthly Cost Trend
       </h3>
+      {chartData.length === 0 ? (
+        <div style={{ height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>
+          No cost data available yet.
+        </div>
+      ) : (
       <ResponsiveContainer width="100%" height={220}>
-        <AreaChart data={data}>
+        <AreaChart data={chartData}>
           <defs>
             <linearGradient id="colorCost" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%"  stopColor="#00d4aa" stopOpacity={0.3} />
@@ -36,6 +43,7 @@ export default function CostChart({ data = DEMO_DATA }) {
           <Area type="monotone" dataKey="cost" stroke="#00d4aa" strokeWidth={2} fill="url(#colorCost)" />
         </AreaChart>
       </ResponsiveContainer>
+      )}
     </div>
   )
 }

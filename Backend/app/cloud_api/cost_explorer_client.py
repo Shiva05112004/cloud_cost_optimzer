@@ -11,7 +11,8 @@ def get_monthly_cost(role_arn: Optional[str] = None) -> dict:
     """
     session = get_boto3_session(role_arn)
     ce = session.client("ce", region_name="us-east-1")
-
+    sts = session.client("sts")
+    print(sts.get_caller_identity())
     today = datetime.utcnow().date()
     first_of_month = today.replace(day=1)
 
@@ -22,9 +23,12 @@ def get_monthly_cost(role_arn: Optional[str] = None) -> dict:
         },
         Granularity="MONTHLY",
         Metrics=["UnblendedCost"],
-        GroupBy=[{"Type": "DIMENSION", "Key": "SERVICE"}],
+       GroupBy=[{"Type": "DIMENSION", "Key": "SERVICE"}],
+  
     )
-
+    print("Raw Cost Explorer response:")
+    print(response)
+    
     results = {}
     for group in response.get("ResultsByTime", [{}])[0].get("Groups", []):
         service = group["Keys"][0]
@@ -32,6 +36,55 @@ def get_monthly_cost(role_arn: Optional[str] = None) -> dict:
         results[service] = round(amount, 4)
 
     return results
+
+
+# def get_cost_trend(role_arn: Optional[str] = None) -> list[dict]:
+#     """Return a simple 6-month cost trend series for the dashboard."""
+#     costs = get_monthly_cost(role_arn)
+#     total = round(sum(costs.values()), 2)
+#     trend = []
+
+#     for month_index in range(6):
+#         month_date = datetime.utcnow().replace(day=1) - timedelta(days=30 * month_index)
+#         trend.append({
+#             "month": month_date.strftime("%b"),
+#             "cost": round(total / max(1, len(costs)), 2),
+#         })
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
+def get_cost_trend(role_arn=None):
+    session = get_boto3_session(role_arn)
+    ce = session.client("ce", region_name="us-east-1")
+
+    end = datetime.utcnow().date().replace(day=1) + relativedelta(months=1)
+    start = end - relativedelta(months=6)
+
+    response = ce.get_cost_and_usage(
+        TimePeriod={
+            "Start": str(start),
+            "End": str(end),
+        },
+        Granularity="MONTHLY",
+        Metrics=["UnblendedCost"]
+    )
+
+    trend = []
+
+    for item in response["ResultsByTime"]:
+        trend.append({
+            "month": datetime.strptime(
+                item["TimePeriod"]["Start"],
+                "%Y-%m-%d"
+            ).strftime("%b"),
+            "cost": float(
+                item["Total"]["UnblendedCost"]["Amount"]
+            ),
+        })
+
+    return trend
+
+    #return trend
 
 
 

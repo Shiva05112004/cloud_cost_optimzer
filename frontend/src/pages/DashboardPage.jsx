@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function DashboardPage() {
   const {
-    instances, totalCost, recommendations,
+    instances, totalCost, costTrend, recommendations,
     totalSavings, loading,
     setInstances, setCosts, setRecommendations, setLoading,
   } = useDashboardStore()
@@ -27,8 +27,11 @@ export default function DashboardPage() {
           getCosts(roleArn),
           getRecommendations(roleArn),
         ])
+        console.log("Cost API Response:", costRes.data)
+console.log("Trend:", costRes.data.trend)
+
         setInstances(ec2Res.data.instances || [])
-        setCosts(costRes.data.by_service || {}, costRes.data.total_usd || 0)
+        setCosts(costRes.data.by_service || {}, costRes.data.total_usd || 0, costRes.data.trend || [])
         setRecommendations(
           recRes.data.recommendations || [],
           recRes.data.total_potential_savings || 0,
@@ -54,15 +57,15 @@ export default function DashboardPage() {
 
       {/* KPI Cards */}
       <div className="grid-4">
-        <KpiCard icon="💰" title="Monthly Cost"    value={`$${totalCost.toFixed(2)}`}   color="var(--accent2)" />
-        <KpiCard icon="✦"  title="Potential Savings" value={`$${totalSavings.toFixed(2)}`} color="var(--accent)"  sub="per month" />
+        <KpiCard icon="💰" title="Monthly Cost"    value={`$${totalCost.toFixed(8)}`}   color="var(--accent2)" />
+        <KpiCard icon="✦"  title="Potential Savings" value={`$${totalSavings.toFixed(8)}`} color="var(--accent)"  sub="per month" />
         <KpiCard icon="⬡"  title="EC2 Instances"  value={instances.length}              color="var(--warn)"    sub="running" />
         <KpiCard icon="⚠"  title="Idle Instances" value={idleCount}                     color="var(--danger)"  sub="need attention" />
       </div>
 
       {/* Chart + Top Recommendations */}
       <div className="grid-2" style={{ marginBottom: '32px' }}>
-        <CostChart />
+        <CostChart data={costTrend} />
         <div className="card">
           <h3 style={{ fontFamily: 'Syne', fontSize: '16px', marginBottom: '16px' }}>
             Top Recommendations

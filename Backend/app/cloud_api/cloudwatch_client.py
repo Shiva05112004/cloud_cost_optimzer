@@ -59,7 +59,7 @@ def get_avg_cpu(instance_id: str, days: int = 7, role_arn: Optional[str] = None)
     Returns the average CPU utilization for an EC2 instance over the past `days` days.
     """
     session = get_boto3_session(role_arn)
-    cloudwatch = session.client("cloudwatch")
+    cloudwatch = session.client("cloudwatch", region_name=settings.aws_default_region)
 
     end_time = datetime.utcnow()
     start_time = end_time - timedelta(days=days)

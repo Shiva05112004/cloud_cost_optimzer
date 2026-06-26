@@ -1,8 +1,16 @@
 export default function ResourceTable({ instances = [] }) {
   const cpuColor = (cpu) => {
-    if (cpu < 10) return 'var(--danger)'
-    if (cpu < 20) return 'var(--warn)'
+    const value = Number(cpu || 0)
+    if (value < 10) return 'var(--danger)'
+    if (value < 20) return 'var(--warn)'
     return 'var(--accent)'
+  }
+
+  const stateBadge = (state) => {
+    const normalized = (state || '').toLowerCase()
+    if (normalized === 'running') return <span className="badge badge-green">Running</span>
+    if (normalized === 'stopped') return <span className="badge badge-red">Stopped</span>
+    return <span className="badge badge-yellow">{state || 'Unknown'}</span>
   }
 
   if (!instances.length) return (
@@ -31,21 +39,17 @@ export default function ResourceTable({ instances = [] }) {
                 {inst.instance_id}
               </td>
               <td>{inst.instance_type}</td>
-              <td>
-                <span className={`badge ${inst.state === 'running' ? 'badge-green' : 'badge-red'}`}>
-                  {inst.state}
-                </span>
-              </td>
+              <td>{stateBadge(inst.state)}</td>
               <td style={{ color: cpuColor(inst.avg_cpu), fontWeight: 600 }}>
-                {inst.avg_cpu?.toFixed(1)}%
+                {Number(inst.avg_cpu || 0).toFixed(1)}%
               </td>
               <td style={{ color: 'var(--muted)' }}>{inst.region}</td>
               <td>
-                {inst.avg_cpu < 10
-                  ? <span className="badge badge-red">Idle</span>
-                  : inst.avg_cpu < 20
-                  ? <span className="badge badge-yellow">Low</span>
-                  : <span className="badge badge-green">Healthy</span>
+                {(inst.state || '').toLowerCase() === 'running'
+                  ? <span className="badge badge-green">Running</span>
+                  : (inst.state || '').toLowerCase() === 'stopped'
+                  ? <span className="badge badge-red">Stopped</span>
+                  : <span className="badge badge-yellow">Unknown</span>
                 }
               </td>
             </tr>
