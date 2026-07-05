@@ -58,6 +58,9 @@ def get_model_info():
     """Get Phase A model metadata and information."""
     service = get_inference_service()
     info = service.get_model_info()
+    # Ensure status field is present for validation
+    if 'status' not in info:
+        info['status'] = info.get('status', 'error' if 'error' in info else 'ready')
     return ModelInfoResponse(**info)
 
 

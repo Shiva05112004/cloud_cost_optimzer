@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
+import AwsConnectionStatus from './AwsConnectionStatus'
 
 const links = [
   { to: '/dashboard',        icon: '▦', label: 'Dashboard' },
@@ -27,7 +28,7 @@ export default function Sidebar() {
       padding: '24px 16px', zIndex: 100,
     }}>
       {/* Logo */}
-      <div style={{ marginBottom: '40px', paddingLeft: '8px' }}>
+      <div style={{ marginBottom: '24px', paddingLeft: '8px' }}>
         <div style={{
           fontFamily: 'Syne', fontSize: '18px',
           fontWeight: 800, color: 'var(--accent)',
@@ -38,6 +39,11 @@ export default function Sidebar() {
         <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>
           Cost Optimizer
         </div>
+      </div>
+
+      {/* AWS Connection Status */}
+      <div style={{ marginBottom: '24px' }}>
+        <AwsConnectionStatus />
       </div>
 
       {/* Nav links */}

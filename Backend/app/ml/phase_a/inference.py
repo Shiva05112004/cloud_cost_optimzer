@@ -53,13 +53,13 @@ class Phase_AIInferenceService:
             }
         """
         if not self.is_ready():
-            return {'error': 'Models not loaded'}
+            return {'error': 'Models not loaded', 'status': 'error'}
         
         # Validate features
         missing_features = [f for f in self.feature_names if f not in features]
         if missing_features:
             logger.warning(f"Missing features: {missing_features}")
-            return {'error': f'Missing required features: {missing_features}'}
+            return {'error': f'Missing required features: {missing_features}', 'status': 'error'}
         
         # Create feature vector in correct order
         X = pd.DataFrame([[features[f] for f in self.feature_names]], columns=self.feature_names)
@@ -81,7 +81,7 @@ class Phase_AIInferenceService:
             }
         except Exception as e:
             logger.error(f"Prediction failed: {e}", exc_info=True)
-            return {'error': str(e)}
+            return {'error': str(e), 'status': 'error'}
     
     def predict_batch(self, features_list: list) -> Dict:
         """
@@ -100,10 +100,10 @@ class Phase_AIInferenceService:
             }
         """
         if not self.is_ready():
-            return {'error': 'Models not loaded'}
+            return {'error': 'Models not loaded', 'status': 'error'}
         
         if not features_list:
-            return {'error': 'Empty features list'}
+            return {'error': 'Empty features list', 'status': 'error'}
         
         try:
             # Create feature dataframe
@@ -126,12 +126,12 @@ class Phase_AIInferenceService:
             }
         except Exception as e:
             logger.error(f"Batch prediction failed: {e}", exc_info=True)
-            return {'error': str(e)}
+            return {'error': str(e), 'status': 'error'}
     
     def get_model_info(self) -> Dict:
         """Get metadata about the loaded models."""
         if not self.is_ready():
-            return {'error': 'Models not loaded'}
+            return {'error': 'Models not loaded', 'status': 'error'}
         
         return {
             'timestamp': self.metadata.get('timestamp'),

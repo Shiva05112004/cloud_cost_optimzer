@@ -11,8 +11,15 @@ def get_boto3_session(role_arn: Optional[str] = None):
     - If role_arn is provided: assumes that IAM role (production flow)
     - Otherwise: uses env credentials (local dev only)
     """
+    # Create base session with configured credentials if available
+    base_session = boto3.Session(
+        aws_access_key_id=settings.aws_access_key_id,
+        aws_secret_access_key=settings.aws_secret_access_key,
+        region_name=settings.aws_default_region,
+    )
+    
     if role_arn:
-        sts = boto3.client("sts", region_name=settings.aws_default_region)
+        sts = base_session.client("sts")
         assumed = sts.assume_role(
             RoleArn=role_arn,
             RoleSessionName="cloud-optimizer-session",
@@ -25,7 +32,7 @@ def get_boto3_session(role_arn: Optional[str] = None):
             region_name=settings.aws_default_region,
         )
     else:
-        session = boto3.Session(region_name=settings.aws_default_region)
+        session = base_session
     return session
 
 

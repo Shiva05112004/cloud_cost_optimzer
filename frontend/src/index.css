@@ -155,3 +155,8 @@ td {
 }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg3); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

@@ -17,6 +17,7 @@
 venv/
 .venv/
 env/
+venv311/
 __pycache__/
 *.py[cod]
 *.pyo
@@ -37,7 +38,8 @@ build/
 *.log
 logs/
 .python-version
-
+processed_metric_features.csv
+predictive_model.joblib
 # ══════════════════════════════════════════
 #  FRONTEND — React / Vite / Node
 # ══════════════════════════════════════════

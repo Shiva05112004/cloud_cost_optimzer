@@ -14,10 +14,10 @@ class Settings(BaseSettings):
 
     aws_access_key_id: Optional[str] = None
     aws_secret_access_key: Optional[str] = None
-    aws_default_region: str = "ap-south-1"
+    aws_default_region: str = "eu-north-1"
 
     ses_sender_email: str = ""
-    ses_region: str = "ap-south-1"
+    ses_region: str = "eu-north-1"
 
     class Config:
         env_file = ".env"
@@ -25,4 +25,7 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    return Settings()
+    settings = Settings()
+    settings.aws_default_region = settings.aws_default_region or "eu-north-1"
+    settings.ses_region = settings.ses_region or "eu-north-1"
+    return settings
