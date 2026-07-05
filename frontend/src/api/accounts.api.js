@@ -5,3 +5,6 @@ export const connectAccount = (data) =>
 
 export const listAccounts = () =>
   api.get('/api/accounts/')
+
+export const getConnectionStatus = () =>
+  api.get('/api/accounts/status')

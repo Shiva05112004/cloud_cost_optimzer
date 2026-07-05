@@ -12,7 +12,12 @@ def send_alert_email(to_email: str, subject: str, body: str) -> dict:
       - SES_REGION in .env
       - AWS credentials with ses:SendEmail permission
     """
-    ses = boto3.client("ses", region_name=settings.ses_region)
+    ses = boto3.client(
+        "ses",
+        aws_access_key_id=settings.aws_access_key_id,
+        aws_secret_access_key=settings.aws_secret_access_key,
+        region_name=settings.ses_region,
+    )
 
     response = ses.send_email(
         Source=settings.ses_sender_email,
